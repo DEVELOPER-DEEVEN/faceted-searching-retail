@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retail Search</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 20px; background-color: #f8f9fa; color: #212529; }
+        .container { display: flex; gap: 30px; }
+        .filters { flex: 0 0 220px; border-right: 1px solid #dee2e6; padding-right: 30px; }
+        .results { flex-grow: 1; }
+        .filter-group { margin-bottom: 20px; }
+        .filter-group h3 { margin-top: 0; font-size: 1.1em; color: #343a40; border-bottom: 1px solid #e9ecef; padding-bottom: 5px; }
+        .filter-toggle { cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; }
+        .filter-toggle::after {
+            content: '−'; /* Minus sign for expanded */
+            font-weight: bold;
+            transition: transform 0.2s ease-in-out;
+        }
+        .filter-group.collapsed .filter-toggle::after {
+            content: '+'; /* Plus sign for collapsed */
+        }
+        .filter-group.collapsed .filter-options { display: none; }
+        .filter-options { padding-top: 10px; }
+        .filter-options label { display: block; margin-bottom: 8px; font-size: 0.95em; cursor: pointer; }
+        .filter-group input { margin-right: 8px; }
+        form { margin-bottom: 25px; }
+        .search-bar input[type="text"] { width: 100%; max-width: 500px; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; margin-bottom: 15px; }
+        .apply-button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; display: block; width: 100%; margin-top: 15px; }
+        .apply-button:hover { background-color: #0056b3; }
+        h1, h2 { color: #0056b3; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .product-card { border: 1px solid #dee2e6; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .product-card img { width: 100%; height: 200px; object-fit: cover; }
+        .product-card-content { padding: 15px; }
+        .product-card-content h4 { margin: 0 0 10px 0; font-size: 1.1em; }
+        .product-card-content p { margin: 0; font-size: 0.9em; color: #6c757d; }
+    </style>
+</head>
+<body>
+    <h1>Retail Product Search</h1>
+
+
+
+    <div class="container">
+        <form action="/search" method="get" class="filters">
+            <aside>
+                <h2>Filters</h2>
+                <div class="search-bar">
+                    <input type="text" name="searchtext" th:value="${selectedFilters.searchtext}" placeholder="Search by context..."/>
+                </div>
+
+                
+                    <div class="filter-group collapsed">
+                    <h3 class="filter-toggle">Category</h3>
+                    <div class="filter-options">
+                        <div th:each="category : ${categories}">
+                            <label>
+                                <input type="checkbox" name="categories" th:value="${category}"
+                                       th:checked="${selectedFilters.categories != null and selectedFilters.categories.contains(category)}">
+                                <span th:text="${category}">Category Name</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-group collapsed">
+                    <h3 class="filter-toggle">Sub-Category</h3>
+                    <div class="filter-options">
+                        <div th:each="subCategory : ${subCategories}">
+                            <label>
+                                <input type="checkbox" name="subCategories" th:value="${subCategory}"
+                                       th:checked="${selectedFilters.subCategories != null and selectedFilters.subCategories.contains(subCategory)}">
+                                <span th:text="${subCategory}">Sub-Category Name</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                
+                    <div class="filter-group collapsed">
+                    <h3 class="filter-toggle">Color</h3>
+                    <div class="filter-options">
+                        <div th:each="color : ${colors}">
+                            <label>
+                                <input type="checkbox" name="colors" th:value="${color}"
+                                       th:checked="${selectedFilters.colors != null and selectedFilters.colors.contains(color)}">
+                                <span th:text="${color}">Color Name</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+              
+                    <div class="filter-group collapsed">
+                    <h3 class="filter-toggle">Styling</h3>
+                    <div class="filter-options">
+                        <div th:each="gender : ${genders}">
+                            <label>
+                                <input type="checkbox" name="genders" th:value="${gender}"
+                                       th:checked="${selectedFilters.genders != null and selectedFilters.genders.contains(gender)}">
+                                <span th:text="${gender}">Gender Name</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="apply-button">Apply Filters</button>
+            </aside>
+        </form>
+
+
+        <main class="results">
+            <h2>Search Results</h2>
+            <!-- Display message if no products are found -->
+            <div th:if="${#lists.isEmpty(products) or #lists.isEmpty(products.get(0))}">
+                <p>No products found matching your criteria.</p>
+            </div>
+
+            <!-- Grid for product results -->
+            <div class="product-grid" th:if="${not #lists.isEmpty(products) and not #lists.isEmpty(products.get(0))}">
+                <!--
+                  Iterate through products
+                  
+                  by index because the data is in separate lists.
+                  products.get(0) is the list of categories, so its size is the number of products.
+                -->
+                <div class="product-card" th:each="i : ${#numbers.sequence(0, #lists.size(products.get(0)) - 1)}">
+                    <img th:src="${products.get(5).get(i)}" alt="Product Image"/>
+                    <div class="product-card-content">
+                        <h4 th:text="${products.get(4).get(i)}">Product Content</h4>
+                        <p th:text="'Category: ' + ${products.get(0).get(i)}">Category</p>
+                        <p th:text="'Color: ' + ${products.get(2).get(i)}">Color</p>
+                    </div>
+                </div>
+             </div>
+            </main>
+    </div>
+
+    <script>
+        
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.filter-toggle').forEach(header => {
+                header.addEventListener('click', () => {
+                    header.parentElement.classList.toggle('collapsed');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
