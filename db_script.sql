@@ -14,14 +14,14 @@ CREATE TABLE apparels (
   additional_specification VARCHAR(100000));
 
 
-INSERT QUERIES FROM FILE >> https://docs.google.com/spreadsheets/d/1Sc0piUotcoXe8BBwF_OUOPpGeMPmvPuiIdlErG0SxbQ/edit?usp=sharing
+INSERT QUERIES FROM FILE >> https://docs.google.com/spreadsheets/d/1WhaeQSIyXgRkx41koQjwb001kIIsgceVhptUezRtjbw/edit?usp=sharing
 
   Copy the insert query statements from the insert scripts sql in the sheet linked above. 
   You can copy 10-50 insert statements for a quick demo of this use case. 
   There is a selected list of inserts here in this “Selected Inserts 25-30 rows” tab.
   
   >> Source of data and license: https://www.kaggle.com/datasets/vikashrajluhaniwal/fashion-images/
-  >> License: https://github.com/AbiramiSukumaran/spanner-vertex-search/blob/main/data%20files/Data%20License%20-%20CC0%201.0%20Deed%20_%20CC0%201.0%20Universal%20_%20Creative%20Commons.pdf
+  
   
 
 
